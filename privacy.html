@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Privacy policy: Local Image Resizer runs entirely in your browser. No images are ever uploaded, stored, or transmitted." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://local-image-resizer.pages.dev/privacy" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Privacy — Local Image Resizer</title>
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Local Image Resizer</h1>
+      <span class="privacy-badge">🔒 Privacy policy</span>
+    </header>
+    <main class="app-main">
+      <article class="panel">
+        <h2>Your images never leave your device</h2>
+        <p>
+          Local Image Resizer is a fully client-side tool. There is no backend,
+          no upload endpoint, and no analytics that transmit image data.
+        </p>
+        <h3>What happens to your image</h3>
+        <ul>
+          <li>Files are read locally via <code>FileReader</code> / <code>createObjectURL</code>.</li>
+          <li>Processing uses the browser's Canvas API — nothing is sent over the network.</li>
+          <li>Output is downloaded straight from your browser to your computer.</li>
+        </ul>
+        <h3>What we store</h3>
+        <p>
+          Only your <em>settings</em> (last width, height, format, quality) in
+          <code>localStorage</code> on your device. Image files are never stored.
+        </p>
+        <h3>How to verify</h3>
+        <ol>
+          <li>Open the tool and press <kbd>F12</kbd> to open DevTools.</li>
+          <li>Switch to the <strong>Network</strong> tab.</li>
+          <li>Load and resize an image.</li>
+          <li>You will see only static assets (the app itself) — no image data leaves your browser.</li>
+        </ol>
+        <h3>Hosting</h3>
+        <p>
+          The app is served from Cloudflare Pages. Cloudflare only delivers the
+          static files of the app; it never receives or processes your images.
+        </p>
+      </article>
+      <p style="text-align:center;margin-top:20px;">
+        <a href="/">← Back to the resizer</a>
+      </p>
+    </main>
+    <footer class="app-footer">© 2026 Local Image Resizer</footer>
+    <script type="module" src="/src/static.ts"></script>
+  </body>
+</html>

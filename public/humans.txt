@@ -1,0 +1,3 @@
+Local Image Resizer
+Made by Shreyash Pattewar
+https://github.com/shreyashp47/local-image-resizer

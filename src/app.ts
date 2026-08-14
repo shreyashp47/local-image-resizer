@@ -117,6 +117,7 @@ export function initApp(): void {
     </main>
     <footer class="app-footer">
       No server, no upload — processing happens locally. Built with the Canvas API.
+      <a href="/privacy">Privacy</a>
     </footer>
   `;
 
