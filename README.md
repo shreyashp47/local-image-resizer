@@ -1,5 +1,8 @@
 # Local Image Resizer
 
+[![CI](https://github.com/shreyashp47/local-image-resizer/actions/workflows/ci.yml/badge.svg)](https://github.com/shreyashp47/local-image-resizer/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Offline, privacy-first image resizer for app icons and social media images.
 
 **Your image never leaves your browser.** All processing happens locally via the
@@ -38,3 +41,43 @@ Requires Node 20+.
 
 Hosted on Cloudflare Pages (production on `main`, preview deploys per PR).
 See [ROADMAP.md](../ROADMAP.md) for the full plan.
+
+### Deploy to Cloudflare Pages
+
+1. Push this repo to GitHub.
+2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**.
+3. Select this repo, set:
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+4. Deploy. Production builds deploy on `main`; every PR gets a preview URL.
+5. (Optional) Attach a custom domain in Cloudflare DNS.
+
+The `public/_headers` file adds CSP/security headers, and `public/_redirects`
+maps unknown routes to the custom 404 page.
+
+## Architecture
+
+```
+src/
+├── main.ts          entry point
+├── app.ts           app shell, state, dropzone, mode switch
+├── settings.ts      settings panel (presets, modes, aspect lock, dims)
+├── render.ts        debounced worker-backed output rendering + download
+├── compare.ts       before/after compare slider
+├── batch.ts         multi-image queue + ZIP export
+├── presets.ts       platform/social preset table
+├── workers/
+│   └── imageWorker.ts   decode + process off the main thread
+└── lib/
+    ├── processImage.ts  multi-step downscale, crop/fit/stretch, export
+    ├── geometry.ts      pure crop/fit math
+    ├── decode.ts        EXIF-aware decoding, friendly errors
+    ├── workerClient.ts  worker wrapper with main-thread fallback
+    ├── settings.ts      localStorage persistence
+    ├── dom.ts           DOM helpers
+    └── types.ts         shared types
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
