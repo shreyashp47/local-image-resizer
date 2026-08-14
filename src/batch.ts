@@ -1,8 +1,9 @@
 import { zipSync } from "fflate";
 import { decodeImage, ImageDecodeError } from "./lib/decode";
 import { formatBytes, mustGet, setStatus } from "./lib/dom";
+import { downloadName } from "./lib/download";
 import { processInWorker } from "./lib/workerClient";
-import type { AppState } from "./app";
+import type { AppState } from "./state";
 
 export type BatchStatus = "pending" | "processing" | "done" | "error";
 
@@ -97,7 +98,7 @@ export function initBatch(root: HTMLElement, state: AppState): void {
       if (item.blob) {
         const a = document.createElement("a");
         a.href = URL.createObjectURL(item.blob);
-        a.download = downloadName(item.file.name, state);
+        a.download = downloadName(item.file.name, state.options);
         a.click();
       }
     });
@@ -160,7 +161,7 @@ export function initBatch(root: HTMLElement, state: AppState): void {
     const files: Record<string, Uint8Array> = {};
     for (const item of done) {
       void item.blob!.arrayBuffer().then((buf) => {
-        files[downloadName(item.file.name, state)] = new Uint8Array(buf);
+        files[downloadName(item.file.name, state.options)] = new Uint8Array(buf);
         if (Object.keys(files).length === done.length) {
           const zipped = zipSync(files);
           const blob = new Blob([zipped], { type: "application/zip" });
@@ -199,10 +200,4 @@ export function initBatch(root: HTMLElement, state: AppState): void {
     if (files.length) addFiles(files);
     input.value = "";
   });
-}
-
-function downloadName(originalName: string, state: AppState): string {
-  const base = originalName.replace(/\.[^.]+$/, "");
-  const ext = state.options.format === "image/png" ? "png" : state.options.format.split("/")[1];
-  return `${base}-${state.options.width}x${state.options.height}.${ext}`;
 }

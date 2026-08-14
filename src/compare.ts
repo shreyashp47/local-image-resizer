@@ -1,5 +1,5 @@
 import { mustGet } from "./lib/dom";
-import type { AppState } from "./app";
+import type { AppState } from "./state";
 
 /**
  * Before/after compare view: original (left of the divider) vs output (right).

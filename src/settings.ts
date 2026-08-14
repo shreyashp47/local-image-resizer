@@ -1,6 +1,6 @@
 import { mustGet, setStatus } from "./lib/dom";
 import { saveSettings } from "./lib/settings";
-import type { AppState } from "./app";
+import { ASPECT_CHANGE_EVENT, type AppState } from "./state";
 import { PRESETS, type Preset } from "./presets";
 import type { OutputFormat } from "./lib/types";
 
@@ -196,6 +196,7 @@ export function initSettings(root: HTMLElement, state: AppState): void {
       height.value = String(h);
       updateOption({ height: h });
     }
+    document.dispatchEvent(new CustomEvent(ASPECT_CHANGE_EVENT));
   });
 
   formatSeg.addEventListener("click", (e) => {

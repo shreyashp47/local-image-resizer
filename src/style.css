@@ -452,6 +452,140 @@ body {
   outline: none;
 }
 
+/* ===== Crop viewport ===== */
+.crop-host {
+  padding: 0;
+  background: var(--color-card);
+  display: block;
+}
+
+.crop-viewport {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  max-height: 460px;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  border-radius: 10px;
+}
+
+.crop-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  max-height: none;
+  cursor: grab;
+  pointer-events: auto;
+  border-radius: 0;
+}
+
+.crop-image.panning {
+  cursor: grabbing;
+}
+
+.crop-shade {
+  position: absolute;
+  background: rgb(0 0 0 / 0.5);
+  z-index: 2;
+}
+
+.crop-box {
+  position: absolute;
+  z-index: 3;
+  border: 2px solid var(--color-accent);
+  cursor: move;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.4) inset;
+}
+
+.crop-box:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: -3px;
+}
+
+.crop-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: var(--color-accent);
+  border: 2px solid #fff;
+  border-radius: 3px;
+  z-index: 4;
+}
+
+.crop-handle[data-handle="nw"] {
+  top: -8px;
+  left: -8px;
+  cursor: nwse-resize;
+}
+.crop-handle[data-handle="n"] {
+  top: -8px;
+  left: calc(50% - 7px);
+  cursor: ns-resize;
+}
+.crop-handle[data-handle="ne"] {
+  top: -8px;
+  right: -8px;
+  cursor: nesw-resize;
+}
+.crop-handle[data-handle="e"] {
+  top: calc(50% - 7px);
+  right: -8px;
+  cursor: ew-resize;
+}
+.crop-handle[data-handle="se"] {
+  bottom: -8px;
+  right: -8px;
+  cursor: nwse-resize;
+}
+.crop-handle[data-handle="s"] {
+  bottom: -8px;
+  left: calc(50% - 7px);
+  cursor: ns-resize;
+}
+.crop-handle[data-handle="sw"] {
+  bottom: -8px;
+  left: -8px;
+  cursor: nesw-resize;
+}
+.crop-handle[data-handle="w"] {
+  top: calc(50% - 7px);
+  left: -8px;
+  cursor: ew-resize;
+}
+
+.crop-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.crop-zoom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  color: #fff;
+}
+
+.crop-zoom input[type="range"] {
+  flex: 1;
+  accent-color: var(--color-accent);
+  margin: 0;
+}
+
+.crop-readout {
+  white-space: nowrap;
+  color: #fff;
+}
+
 /* ===== Mode switch ===== */
 .mode-switch {
   display: flex;

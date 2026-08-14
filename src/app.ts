@@ -1,52 +1,18 @@
 import { decodeImage, ImageDecodeError } from "./lib/decode";
 import { mustGet, setStatus } from "./lib/dom";
-import { loadSettings } from "./lib/settings";
-import type { ProcessOptions, ProcessResult } from "./lib/types";
+import type { AppState } from "./state";
+import { createAppState } from "./state";
 import { initBatch } from "./batch";
 import { initCompare } from "./compare";
+import { createCropViewport } from "./crop";
 import { initRender } from "./render";
 import { initSettings } from "./settings";
-
-export interface AppState {
-  file: File | null;
-  bitmap: ImageBitmap | null;
-  output: ProcessResult | null;
-  options: ProcessOptions;
-  renderToken: number;
-  presetId?: string;
-  aspectRatio?: number;
-  scheduleRender: () => void;
-  renderOutput: () => Promise<void>;
-}
-
-export function createDefaultOptions(): ProcessOptions {
-  return { width: 512, height: 512, mode: "crop", format: "image/jpeg", quality: 90 };
-}
 
 export function initApp(): void {
   const root = document.querySelector<HTMLDivElement>("#app");
   if (!root) throw new Error("App root not found.");
 
-  const defaults = createDefaultOptions();
-  const saved = loadSettings();
-  const options: ProcessOptions = {
-    width: saved?.width ?? defaults.width,
-    height: saved?.height ?? defaults.height,
-    mode: saved?.mode ?? defaults.mode,
-    format: saved?.format ?? defaults.format,
-    quality: saved?.quality ?? defaults.quality,
-  };
-
-  const state: AppState = {
-    file: null,
-    bitmap: null,
-    output: null,
-    options,
-    renderToken: 0,
-    aspectRatio: saved?.aspectRatio,
-    scheduleRender: () => {},
-    renderOutput: async () => {},
-  };
+  const state = createAppState();
 
   root.innerHTML = `
     <a class="skip-link" href="#mainContent">Skip to content</a>
@@ -79,7 +45,7 @@ export function initApp(): void {
           <div class="grid-2">
             <section class="panel" aria-labelledby="origTitle">
               <h2 id="origTitle">Original</h2>
-              <div class="preview-box" id="origBox"><img id="origPreview" alt="Original image"></div>
+              <div class="preview-box" id="origBox"></div>
               <div class="preview-label" id="origMeta"></div>
             </section>
             <section class="panel" aria-labelledby="outTitle">
@@ -121,16 +87,23 @@ export function initApp(): void {
     </footer>
   `;
 
-  wireDropzone(root, state);
-  wireModeSwitch(root, state);
-  initSettings(root, state);
+  const cropViewport = createCropViewport(mustGet<HTMLElement>(root, "#origBox"), {
+    aspectRatio: () => state.aspectRatio,
+    setSourceRect: (rect) => {
+      state.sourceRect = rect;
+    },
+    onCropChange: () => state.scheduleRender(),
+  });
+
+  wireDropzone(root, state, cropViewport);
+  wireModeSwitch(root);  initSettings(root, state);
   initRender(root, state);
   initCompare(root, state);
   initBatch(root, state);
   setStatus(root, "Choose an image to get started.");
 }
 
-function wireModeSwitch(root: HTMLElement, state: AppState): void {
+function wireModeSwitch(root: HTMLElement): void {
   const singleBtn = mustGet<HTMLButtonElement>(root, "#modeSingle");
   const batchBtn = mustGet<HTMLButtonElement>(root, "#modeBatch");
   const singleView = mustGet<HTMLElement>(root, "#singleView");
@@ -148,10 +121,13 @@ function wireModeSwitch(root: HTMLElement, state: AppState): void {
 
   singleBtn.addEventListener("click", () => setMode("single"));
   batchBtn.addEventListener("click", () => setMode("batch"));
-  void state;
 }
 
-function wireDropzone(root: HTMLElement, state: AppState): void {
+function wireDropzone(
+  root: HTMLElement,
+  state: AppState,
+  cropViewport: { applySource: (bitmap: ImageBitmap, file: File) => void },
+): void {
   const dropzone = mustGet<HTMLElement>(root, "#dropzone");
   const fileInput = mustGet<HTMLInputElement>(root, "#fileInput");
   const dropError = mustGet<HTMLElement>(root, "#dropError");
@@ -188,11 +164,11 @@ function wireDropzone(root: HTMLElement, state: AppState): void {
   }
   dropzone.addEventListener("drop", (e) => {
     const file = e.dataTransfer?.files[0];
-    if (file) void loadFile(file, state, root, showError);
+    if (file) void loadFile(file, state, root, cropViewport, showError);
   });
   fileInput.addEventListener("change", () => {
     const file = fileInput.files?.[0];
-    if (file) void loadFile(file, state, root, showError);
+    if (file) void loadFile(file, state, root, cropViewport, showError);
     fileInput.value = "";
   });
 }
@@ -201,6 +177,7 @@ async function loadFile(
   file: File,
   state: AppState,
   root: HTMLElement,
+  cropViewport: { applySource: (bitmap: ImageBitmap, file: File) => void },
   showError: (message: string) => void,
 ): Promise<void> {
   showError("");
@@ -212,14 +189,13 @@ async function loadFile(
     state.file = file;
     state.output = null;
     state.renderToken = 0;
+    state.sourceRect = undefined;
 
     const workspace = mustGet<HTMLElement>(root, "#workspace");
     workspace.hidden = false;
     workspace.classList.add("visible");
 
-    const preview = mustGet<HTMLImageElement>(root, "#origPreview");
-    preview.src = URL.createObjectURL(file);
-    preview.alt = file.name;
+    cropViewport.applySource(bitmap, file);
 
     const meta = mustGet<HTMLElement>(root, "#origMeta");
     meta.textContent = `${bitmap.width} x ${bitmap.height} px — ${file.name}`;

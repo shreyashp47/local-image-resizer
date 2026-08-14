@@ -1,6 +1,7 @@
 import { debounce, formatBytes, mustGet, setStatus } from "./lib/dom";
-import type { AppState } from "./app";
-import { filenameForPreset, PRESETS } from "./presets";
+import { downloadName } from "./lib/download";
+import type { AppState } from "./state";
+import { buildProcessOptions } from "./state";
 import { processInWorker } from "./lib/workerClient";
 
 /**
@@ -21,7 +22,7 @@ export function initRender(root: HTMLElement, state: AppState): void {
     const token = ++state.renderToken;
     setStatus(root, "Processing…", "loading");
     try {
-      const result = await processInWorker(state.file, state.options);
+      const result = await processInWorker(state.file, buildProcessOptions(state));
       if (token !== state.renderToken) return;
 
       state.output = result;
@@ -45,11 +46,7 @@ export function initRender(root: HTMLElement, state: AppState): void {
 
   downloadBtn.addEventListener("click", () => {
     if (!latestBlob) return;
-    const ext = state.options.format === "image/png" ? "png" : state.options.format.split("/")[1];
-    const preset = state.presetId ? PRESETS.find((p) => p.id === state.presetId) : undefined;
-    const name = preset
-      ? filenameForPreset(preset)
-      : `resized-${state.options.width}x${state.options.height}.${ext}`;
+    const name = downloadName(state.file?.name ?? "resized", state.options, state.presetId);
     const a = document.createElement("a");
     a.href = URL.createObjectURL(latestBlob);
     a.download = name;

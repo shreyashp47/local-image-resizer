@@ -44,10 +44,19 @@ export async function processImage(
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, dstW, dstH);
 
-  const srcRect: Rect =
-    options.mode === "crop"
-      ? computeCropRect(srcW, srcH, dstW, dstH)
-      : { x: 0, y: 0, width: srcW, height: srcH };
+  const srcRect: Rect = (() => {
+    if (options.mode === "crop") {
+      if (options.sourceRect) {
+        const r = options.sourceRect;
+        if (r.width < 1 || r.height < 1 || r.x < 0 || r.y < 0 || r.x + r.width > srcW || r.y + r.height > srcH) {
+          throw new Error("Crop region is outside the image bounds.");
+        }
+        return { x: r.x, y: r.y, width: r.width, height: r.height };
+      }
+      return computeCropRect(srcW, srcH, dstW, dstH);
+    }
+    return { x: 0, y: 0, width: srcW, height: srcH };
+  })();
 
   if (options.mode === "fit") {
     const { dx, dy, dw, dh } = computeFitRect(srcW, srcH, dstW, dstH);

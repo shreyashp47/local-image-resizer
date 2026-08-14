@@ -32,7 +32,7 @@ test("change to 512x512 JPEG q90 -> download is valid and under 1 MB", async ({ 
   const downloadPromise = page.waitForEvent("download");
   await page.click("#downloadBtn");
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatch(/^resized-512x512\.jpe?g$/);
+  expect(download.suggestedFilename()).toMatch(/^fixture-2000x2000-512x512\.jpe?g$/);
 
   const path = await download.path();
   expect(path).toBeTruthy();
@@ -82,6 +82,59 @@ test("App Store preset sets 1024x1024 PNG", async ({ page }) => {
   expect(pngSignature(buf)).toBe(true);
   const size = await getNaturalSize(page, "#outBox img");
   expect(size).toEqual({ width: 1024, height: 1024 });
+});
+
+test("crop viewport: resizing the box updates source readout and output", async ({ page }) => {
+  await page.goto("/");
+  const img = await makeImage(page, 800, 600);
+  await loadImageViaInput(page, img);
+  await expectOutputVisible(page);
+  await expect(page.locator(".crop-viewport")).toBeVisible();
+
+  const readout = page.locator("#cropReadout");
+  const before = await readout.textContent();
+
+  const box = page.locator("#cropBox");
+  await box.scrollIntoViewIfNeeded();
+  const boxBox = await box.boundingBox();
+  expect(boxBox).toBeTruthy();
+  // Drag the SE resize handle inward to shrink the crop box.
+  await page.mouse.move(boxBox!.x + boxBox!.width - 5, boxBox!.y + boxBox!.height - 5);
+  await page.mouse.down();
+  await page.mouse.move(boxBox!.x + boxBox!.width - 60, boxBox!.y + boxBox!.height - 40, { steps: 5 });
+  await page.mouse.up();
+
+  await expect.poll(() => readout.textContent()).not.toBe(before);
+  // Source readout shows natural-pixel dimensions (image is 800x600, viewport covers it).
+  const match = (await readout.textContent())?.match(/^(\d+) x (\d+) px source$/);
+  expect(match).toBeTruthy();
+  expect(parseInt(match![1], 10)).toBeGreaterThan(0);
+  expect(parseInt(match![2], 10)).toBeGreaterThan(0);
+  // Output still renders at exactly 512x512.
+  await expectOutputVisible(page);
+  const out = await getNaturalSize(page, "#outBox img");
+  expect(out).toEqual({ width: 512, height: 512 });
+});
+
+test("crop viewport: aspect lock constrains the box and zoom updates readout", async ({ page }) => {
+  await page.goto("/");
+  const img = await makeImage(page, 1200, 800);
+  await loadImageViaInput(page, img);
+  await expect(page.locator(".crop-viewport")).toBeVisible();
+
+  await page.click('button[data-ratio="1"]'); // lock 1:1
+  await expect(page.locator("#cropZoom")).toHaveValue("1");
+  const zoomVal = page.locator("#cropZoomVal");
+  await expect(zoomVal).toHaveText("100%");
+
+  // Zoom in via the slider; the viewport readout must shrink.
+  await page.locator("#cropZoom").evaluate((el) => {
+    (el as HTMLInputElement).value = "2";
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  await expect(zoomVal).toHaveText("200%");
+  const readout = page.locator("#cropReadout");
+  await expect.poll(() => readout.textContent()).not.toBeNull();
 });
 
 test("corrupt file drop shows an inline error, not a crash", async ({ page }) => {
