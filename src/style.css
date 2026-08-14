@@ -338,6 +338,43 @@ body {
   color: var(--color-muted);
 }
 
+/* ===== Presets ===== */
+.preset-group {
+  margin-top: 10px;
+}
+
+.preset-cat {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+  margin-bottom: 6px;
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-chip {
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-card);
+  color: var(--color-text);
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.preset-chip:hover,
+.preset-chip:focus-visible {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

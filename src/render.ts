@@ -1,5 +1,6 @@
 import { debounce, formatBytes, mustGet, setStatus } from "./lib/dom";
 import type { AppState } from "./app";
+import { filenameForPreset, PRESETS } from "./presets";
 import { processInWorker } from "./lib/workerClient";
 
 /**
@@ -45,9 +46,13 @@ export function initRender(root: HTMLElement, state: AppState): void {
   downloadBtn.addEventListener("click", () => {
     if (!latestBlob) return;
     const ext = state.options.format === "image/png" ? "png" : state.options.format.split("/")[1];
+    const preset = state.presetId ? PRESETS.find((p) => p.id === state.presetId) : undefined;
+    const name = preset
+      ? filenameForPreset(preset)
+      : `resized-${state.options.width}x${state.options.height}.${ext}`;
     const a = document.createElement("a");
     a.href = URL.createObjectURL(latestBlob);
-    a.download = `resized-${state.options.width}x${state.options.height}.${ext}`;
+    a.download = name;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
   });

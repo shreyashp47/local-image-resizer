@@ -1,5 +1,6 @@
-import { mustGet } from "./lib/dom";
+import { mustGet, setStatus } from "./lib/dom";
 import type { AppState } from "./app";
+import { PRESETS, type Preset } from "./presets";
 import type { OutputFormat } from "./lib/types";
 
 export const FORMATS: Array<{ value: OutputFormat; label: string }> = [
@@ -10,7 +11,26 @@ export const FORMATS: Array<{ value: OutputFormat; label: string }> = [
 
 export function initSettings(root: HTMLElement, state: AppState): void {
   const body = mustGet<HTMLElement>(root, "#settingsBody");
+  const categories = [...new Set(PRESETS.map((p) => p.category))];
   body.innerHTML = `
+    <label class="field">Presets
+      ${categories
+        .map(
+          (cat) => `
+        <div class="preset-group">
+          <span class="preset-cat">${cat}</span>
+          <div class="preset-row">
+            ${PRESETS.filter((p) => p.category === cat)
+              .map(
+                (p) =>
+                  `<button type="button" class="preset-chip" data-preset="${p.id}" title="${p.width} x ${p.height}">${p.label}</button>`,
+              )
+              .join("")}
+          </div>
+        </div>`,
+        )
+        .join("")}
+    </label>
     <div class="row">
       <label class="field">Width (px)
         <input type="number" id="width" value="${state.options.width}" min="1" max="8192" inputmode="numeric">
@@ -44,6 +64,27 @@ export function initSettings(root: HTMLElement, state: AppState): void {
   const qualityVal = mustGet<HTMLElement>(body, "#qualityVal");
   const qualityRow = mustGet<HTMLElement>(body, "#qualityRow");
   const resetBtn = mustGet<HTMLButtonElement>(body, "#resetBtn");
+
+  body.querySelectorAll<HTMLButtonElement>("button[data-preset]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const preset = PRESETS.find((p) => p.id === btn.dataset.preset);
+      if (!preset) return;
+      applyPreset(preset);
+    });
+  });
+
+  function applyPreset(preset: Preset): void {
+    width.value = String(preset.width);
+    height.value = String(preset.height);
+    formatSeg.querySelectorAll("button").forEach((b) =>
+      b.classList.toggle("active", b.dataset.format === preset.format),
+    );
+    state.options = { ...state.options, width: preset.width, height: preset.height, format: preset.format };
+    state.presetId = preset.id;
+    qualityRow.style.display = preset.format === "image/png" ? "none" : "block";
+    state.scheduleRender();
+    setStatus(root, `Preset applied: ${preset.label} (${preset.width} x ${preset.height})`);
+  }
 
   const updateQualityRow = () => {
     qualityRow.style.display = state.options.format === "image/png" ? "none" : "block";

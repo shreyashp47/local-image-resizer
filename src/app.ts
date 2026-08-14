@@ -10,6 +10,7 @@ export interface AppState {
   output: ProcessResult | null;
   options: ProcessOptions;
   renderToken: number;
+  presetId?: string;
   scheduleRender: () => void;
   renderOutput: () => Promise<void>;
 }
