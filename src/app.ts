@@ -1,5 +1,6 @@
 import { decodeImage, ImageDecodeError } from "./lib/decode";
 import { mustGet, setStatus } from "./lib/dom";
+import { loadSettings } from "./lib/settings";
 import type { ProcessOptions, ProcessResult } from "./lib/types";
 import { initBatch } from "./batch";
 import { initCompare } from "./compare";
@@ -26,12 +27,23 @@ export function initApp(): void {
   const root = document.querySelector<HTMLDivElement>("#app");
   if (!root) throw new Error("App root not found.");
 
+  const defaults = createDefaultOptions();
+  const saved = loadSettings();
+  const options: ProcessOptions = {
+    width: saved?.width ?? defaults.width,
+    height: saved?.height ?? defaults.height,
+    mode: saved?.mode ?? defaults.mode,
+    format: saved?.format ?? defaults.format,
+    quality: saved?.quality ?? defaults.quality,
+  };
+
   const state: AppState = {
     file: null,
     bitmap: null,
     output: null,
-    options: createDefaultOptions(),
+    options,
     renderToken: 0,
+    aspectRatio: saved?.aspectRatio,
     scheduleRender: () => {},
     renderOutput: async () => {},
   };

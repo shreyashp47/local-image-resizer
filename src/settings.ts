@@ -1,4 +1,5 @@
 import { mustGet, setStatus } from "./lib/dom";
+import { saveSettings } from "./lib/settings";
 import type { AppState } from "./app";
 import { PRESETS, type Preset } from "./presets";
 import type { OutputFormat } from "./lib/types";
@@ -115,6 +116,7 @@ export function initSettings(root: HTMLElement, state: AppState): void {
     );
     state.options = { ...state.options, width: preset.width, height: preset.height, format: preset.format };
     state.presetId = preset.id;
+    persist();
     qualityRow.style.display = preset.format === "image/png" ? "none" : "block";
     state.scheduleRender();
     setStatus(root, `Preset applied: ${preset.label} (${preset.width} x ${preset.height})`);
@@ -126,7 +128,19 @@ export function initSettings(root: HTMLElement, state: AppState): void {
 
   const updateOption = (patch: Partial<AppState["options"]>) => {
     state.options = { ...state.options, ...patch };
+    persist();
     state.scheduleRender();
+  };
+
+  const persist = () => {
+    saveSettings({
+      width: state.options.width,
+      height: state.options.height,
+      format: state.options.format,
+      quality: state.options.quality ?? 90,
+      mode: state.options.mode,
+      aspectRatio: state.aspectRatio,
+    });
   };
 
   const commitDim = (which: "width" | "height") => {
