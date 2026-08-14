@@ -44,12 +44,18 @@ export function initApp(): void {
         <div class="workspace" id="workspace" hidden>
           <div class="grid-2">
             <section class="panel" aria-labelledby="origTitle">
-              <h2 id="origTitle">Original</h2>
+              <div class="panel-head">
+                <h2 id="origTitle">Original</h2>
+                <span class="panel-badge">Crop &amp; zoom</span>
+              </div>
               <div class="preview-box" id="origBox"></div>
               <div class="preview-label" id="origMeta"></div>
             </section>
             <section class="panel" aria-labelledby="outTitle">
-              <h2 id="outTitle">Output</h2>
+              <div class="panel-head">
+                <h2 id="outTitle">Output</h2>
+                <span class="panel-badge">Live preview</span>
+              </div>
               <div class="preview-box" id="outBox"></div>
               <div class="preview-label" id="outMeta"></div>
             </section>
@@ -201,6 +207,7 @@ async function loadFile(
     meta.textContent = `${bitmap.width} x ${bitmap.height} px — ${file.name}`;
 
     const outBox = mustGet<HTMLElement>(root, "#outBox");
+    outBox.classList.toggle("solid", state.options.format !== "image/png");
     outBox.innerHTML = "";
     mustGet<HTMLElement>(root, "#outMeta").textContent = "";
     mustGet<HTMLButtonElement>(root, "#downloadBtn").disabled = true;

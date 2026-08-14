@@ -27,6 +27,7 @@ export function initRender(root: HTMLElement, state: AppState): void {
 
       state.output = result;
       latestBlob = result.blob;
+      outBox.classList.toggle("solid", state.options.format !== "image/png");
       outBox.innerHTML = "";
       const img = document.createElement("img");
       img.src = URL.createObjectURL(result.blob);
