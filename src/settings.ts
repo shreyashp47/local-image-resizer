@@ -118,7 +118,7 @@ export function initSettings(root: HTMLElement, state: AppState): void {
     state.presetId = preset.id;
     persist();
     qualityRow.style.display = preset.format === "image/png" ? "none" : "block";
-    state.scheduleRender();
+    state.renderOutput();
     setStatus(root, `Preset applied: ${preset.label} (${preset.width} x ${preset.height})`);
   }
 
