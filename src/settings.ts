@@ -83,11 +83,6 @@ export function initSettings(root: HTMLElement, state: AppState): void {
       <input type="range" id="quality" min="10" max="100" value="${state.options.quality ?? 90}">
       <span id="qualityVal" style="color:var(--color-muted);font-weight:400;">${state.options.quality ?? 90}</span>
     </label>
-    <div class="actions">
-      <button type="button" class="btn-primary" id="downloadBtn" disabled>Download</button>
-      <button type="button" class="btn-secondary" id="compareBtn" aria-pressed="false">Compare</button>
-      <button type="button" class="btn-secondary" id="resetBtn">Choose another image</button>
-    </div>
   `;
 
   const width = mustGet<HTMLInputElement>(body, "#width");
@@ -98,7 +93,6 @@ export function initSettings(root: HTMLElement, state: AppState): void {
   const quality = mustGet<HTMLInputElement>(body, "#quality");
   const qualityVal = mustGet<HTMLElement>(body, "#qualityVal");
   const qualityRow = mustGet<HTMLElement>(body, "#qualityRow");
-  const resetBtn = mustGet<HTMLButtonElement>(body, "#resetBtn");
 
   body.querySelectorAll<HTMLButtonElement>("button[data-preset]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -212,8 +206,6 @@ export function initSettings(root: HTMLElement, state: AppState): void {
     qualityVal.textContent = quality.value;
     updateOption({ quality: parseInt(quality.value, 10) });
   });
-
-  resetBtn.addEventListener("click", () => window.location.reload());
 
   updateQualityRow();
 }

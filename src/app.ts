@@ -78,27 +78,34 @@ export function initApp(): void {
         </div>
 
         <div class="workspace" id="workspace" hidden>
-          <div class="grid-2">
-            <section class="panel" aria-labelledby="origTitle">
-              <div class="panel-head">
-                <h2 id="origTitle">Original</h2>
-                <span class="panel-badge">Crop &amp; zoom</span>
-              </div>
-              <div class="preview-box" id="origBox"></div>
-              <div class="preview-label" id="origMeta"></div>
-            </section>
-            <section class="panel" aria-labelledby="outTitle">
-              <div class="panel-head">
-                <h2 id="outTitle">Output</h2>
-                <span class="panel-badge">Live preview</span>
-              </div>
-              <div class="preview-box" id="outBox"></div>
-              <div class="preview-label" id="outMeta"></div>
-            </section>
+          <div class="editor-grid">
+            <div class="grid-2">
+              <section class="panel" aria-labelledby="origTitle">
+                <div class="panel-head">
+                  <h2 id="origTitle">Original</h2>
+                  <span class="panel-badge">Crop &amp; zoom</span>
+                </div>
+                <div class="preview-box" id="origBox"></div>
+                <div class="preview-label" id="origMeta"></div>
+              </section>
+              <section class="panel" aria-labelledby="outTitle">
+                <div class="panel-head">
+                  <h2 id="outTitle">Output</h2>
+                  <span class="panel-badge">Live preview</span>
+                </div>
+                <div class="preview-box" id="outBox"></div>
+                <div class="preview-label" id="outMeta"></div>
+              </section>
+            </div>
+            <aside class="panel settings-panel" id="settingsPanel" aria-labelledby="settingsTitle">
+              <h2 id="settingsTitle">Settings</h2>
+              <div id="settingsBody"></div>
+            </aside>
           </div>
-          <div class="panel" id="settingsPanel" style="margin-top:20px;" aria-labelledby="settingsTitle">
-            <h2 id="settingsTitle">Settings</h2>
-            <div id="settingsBody"></div>
+          <div class="action-bar">
+            <button type="button" class="btn-primary" id="downloadBtn" disabled>Download</button>
+            <button type="button" class="btn-secondary" id="compareBtn" aria-pressed="false">Compare</button>
+            <button type="button" class="btn-secondary" id="resetBtn">Choose another image</button>
           </div>
         </div>
         <div class="status" id="status" role="status" aria-live="polite"></div>
@@ -142,6 +149,7 @@ export function initApp(): void {
   initRender(root, state);
   initCompare(root, state);
   initBatch(root, state);
+  mustGet<HTMLButtonElement>(root, "#resetBtn").addEventListener("click", () => window.location.reload());
   setStatus(root, "Choose an image to get started.");
 }
 
