@@ -6,7 +6,6 @@ import {
   jpegSignature,
   loadImageViaInput,
   makeImage,
-  pngSignature,
   readDownload,
   zipSignature,
 } from "./helpers";

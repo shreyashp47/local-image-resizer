@@ -3,6 +3,8 @@
 [![CI](https://github.com/shreyashp47/local-image-resizer/actions/workflows/ci.yml/badge.svg)](https://github.com/shreyashp47/local-image-resizer/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+**Live:** https://local-image-resizer.vercel.app/
+
 Offline, privacy-first image resizer for app icons and social media images.
 
 **Your image never leaves your browser.** All processing happens locally via the
@@ -13,7 +15,6 @@ network requests carrying your image data.
 ## Features
 
 - Resize and crop images to exact dimensions
-- Presets for app icons (App Store, Google Play) and social media (Instagram, YouTube, HD, 4K)
 - Fit modes: cover / contain / stretch, with aspect-ratio lock
 - Export to JPEG, WebP, or PNG with quality control
 - Batch processing with ZIP download
@@ -39,18 +40,16 @@ Requires Node 20+.
 
 ## Deployment
 
-Hosted on Cloudflare Pages (production on `main`, preview deploys per PR).
-See [ROADMAP.md](../ROADMAP.md) for the full plan.
+Hosted on Vercel (production on `main`, preview deploys per PR).
 
-### Deploy to Cloudflare Pages
+### Deploy to Vercel
 
 1. Push this repo to GitHub.
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**.
-3. Select this repo, set:
+2. In Vercel: **Add New… → Project** → Import this repo.
+3. Framework: Vite (auto-detected). Settings:
    - Build command: `npm run build`
-   - Build output directory: `dist`
+   - Output directory: `dist`
 4. Deploy. Production builds deploy on `main`; every PR gets a preview URL.
-5. (Optional) Attach a custom domain in Cloudflare DNS.
 
 The `public/_headers` file adds CSP/security headers, and `public/_redirects`
 maps unknown routes to the custom 404 page.
@@ -65,10 +64,10 @@ src/
 ├── render.ts        debounced worker-backed output rendering + download
 ├── compare.ts       before/after compare slider
 ├── batch.ts         multi-image queue + ZIP export
-├── presets.ts       platform/social preset table
+├── presets.ts       preset table
 ├── workers/
 │   └── imageWorker.ts   decode + process off the main thread
-└── lib/
+��── lib/
     ├── processImage.ts  multi-step downscale, crop/fit/stretch, export
     ├── geometry.ts      pure crop/fit math
     ├── decode.ts        EXIF-aware decoding, friendly errors

@@ -133,6 +133,8 @@ export function initApp(): void {
     <footer class="app-footer">
       No server, no upload — processing happens locally. Built with the Canvas API.
       <a href="/privacy">Privacy</a>
+      ·
+      <a href="https://shreyashp47.github.io/" target="_blank" rel="noopener">By Shreyash Pattewar</a>
     </footer>
   `;
 
