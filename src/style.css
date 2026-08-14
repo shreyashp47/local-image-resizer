@@ -557,7 +557,7 @@ body {
   border-radius: 10px;
 }
 
-.crop-image {
+.crop-host .crop-image {
   position: absolute;
   top: 0;
   left: 0;

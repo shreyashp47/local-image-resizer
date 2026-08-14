@@ -91,6 +91,12 @@ test("crop viewport: resizing the box updates source readout and output", async 
   await expectOutputVisible(page);
   await expect(page.locator(".crop-viewport")).toBeVisible();
 
+  // The original must never be distorted inside the crop viewport.
+  const cropAspect = await page.locator("#cropImage").evaluate(
+    (el) => (el as HTMLImageElement).getBoundingClientRect().width / (el as HTMLImageElement).getBoundingClientRect().height,
+  );
+  expect(cropAspect).toBeCloseTo(800 / 600, 2);
+
   const readout = page.locator("#cropReadout");
   const before = await readout.textContent();
 
