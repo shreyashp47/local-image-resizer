@@ -541,7 +541,7 @@ body {
 
 /* ===== Crop viewport ===== */
 .crop-host {
-  padding: 0;
+  padding: 12px;
   background: var(--color-card);
   display: block;
 }

@@ -13,6 +13,14 @@ export interface Point {
 export type Handle = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 /**
+ * Base scale that fits the whole image inside the viewport (letterboxed).
+ * The default view shows every pixel; zooming in beyond this fills the frame.
+ */
+export function fitScale(imgW: number, imgH: number, boxW: number, boxH: number): number {
+  return Math.min(boxW / imgW, boxH / imgH);
+}
+
+/**
  * Base scale that fits the image to cover the viewport (fills it exactly in
  * at least one axis). Crop-frame coverage requires zoom >= 1.
  */
@@ -24,13 +32,19 @@ export function displayedSize(imgW: number, imgH: number, scale: number): { widt
   return { width: imgW * scale, height: imgH * scale };
 }
 
-/** Clamp the image's top-left offset so the viewport is always fully covered. */
+/**
+ * Clamp the image's top-left offset. When the image is larger than the
+ * viewport it must always cover it; when smaller it must stay fully visible
+ * (letterboxed around the image).
+ */
 export function clampPan(ox: number, oy: number, dispW: number, dispH: number, boxW: number, boxH: number): Point {
-  const minX = boxW - dispW; // <= 0 because dispW >= boxW
-  const minY = boxH - dispH;
+  const minX = Math.min(boxW - dispW, 0);
+  const maxX = Math.max(boxW - dispW, 0);
+  const minY = Math.min(boxH - dispH, 0);
+  const maxY = Math.max(boxH - dispH, 0);
   return {
-    x: clamp(ox, minX, 0),
-    y: clamp(oy, minY, 0),
+    x: clamp(ox, minX, maxX),
+    y: clamp(oy, minY, maxY),
   };
 }
 

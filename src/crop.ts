@@ -3,8 +3,8 @@ import { ASPECT_CHANGE_EVENT } from "./state";
 import {
   clampPan,
   constrainToAspect,
-  coverScale,
   displayedSize,
+  fitScale,
   imageBounds,
   moveCrop,
   recenterOnZoom,
@@ -152,7 +152,7 @@ export function createCropViewport(box: HTMLElement, deps: CropDeps): CropViewpo
 
   function setZoom(next: number): void {
     const oldDisp = dispSize();
-    scale = coverScale(imgW, imgH, boxW, boxH) * next;
+    scale = fitScale(imgW, imgH, boxW, boxH) * next;
     const newDisp = dispSize();
     offset = recenterOnZoom(offset.x, offset.y, oldDisp.width, oldDisp.height, newDisp.width, newDisp.height, boxW, boxH);
     crop = clampCropToBounds(crop);
@@ -276,7 +276,7 @@ export function createCropViewport(box: HTMLElement, deps: CropDeps): CropViewpo
     if (imgW <= 0 || prevW <= 0) return;
     const kx = boxW / prevW;
     const ky = boxH / prevH;
-    scale = coverScale(imgW, imgH, boxW, boxH) * zoomInput.valueAsNumber;
+    scale = fitScale(imgW, imgH, boxW, boxH) * zoomInput.valueAsNumber;
     offset = { x: (boxW - dispSize().width) / 2, y: (boxH - dispSize().height) / 2 };
     crop = clampCropToBounds({ x: crop.x * kx, y: crop.y * ky, width: crop.width * kx, height: crop.height * ky });
     render();
@@ -295,7 +295,7 @@ export function createCropViewport(box: HTMLElement, deps: CropDeps): CropViewpo
     const r = viewport.getBoundingClientRect();
     boxW = Math.max(1, r.width);
     boxH = Math.max(1, r.height);
-    scale = coverScale(imgW, imgH, boxW, boxH);
+    scale = fitScale(imgW, imgH, boxW, boxH);
     offset = { x: (boxW - dispSize().width) / 2, y: (boxH - dispSize().height) / 2 };
     crop = {
       x: Math.max(0, offset.x),

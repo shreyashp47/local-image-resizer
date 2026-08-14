@@ -4,6 +4,7 @@ import {
   constrainToAspect,
   coverScale,
   displayedSize,
+  fitScale,
   moveCrop,
   naturalToViewport,
   recenterOnZoom,
@@ -11,8 +12,13 @@ import {
   viewportToNatural,
 } from "./cropGeometry";
 
-describe("coverScale & displayedSize", () => {
-  it("fills the viewport by scaling to max", () => {
+describe("fitScale, coverScale & displayedSize", () => {
+  it("fitScale letterboxes the image inside the viewport", () => {
+    expect(fitScale(2000, 1000, 500, 500)).toBe(0.25); // width-bound
+    expect(fitScale(1000, 2000, 500, 500)).toBe(0.25); // height-bound
+  });
+
+  it("coverScale fills the viewport by scaling to max", () => {
     expect(coverScale(2000, 1000, 500, 500)).toBe(0.5);
     const d = displayedSize(2000, 1000, 0.5);
     expect(d).toEqual({ width: 1000, height: 500 });
@@ -30,6 +36,15 @@ describe("clampPan", () => {
 
   it("centers an exactly-covering image", () => {
     expect(clampPan(0, 0, 500, 500, 500, 500)).toEqual({ x: 0, y: 0 });
+  });
+
+  it("keeps a smaller image fully visible (letterboxed)", () => {
+    // image (400x200) is smaller than viewport (500x500); it must stay
+    // fully visible, so offsets are clamped to [0, 100]x[0, 300]
+    expect(clampPan(-500, -500, 400, 200, 500, 500)).toEqual({ x: 0, y: 0 });
+    expect(clampPan(50, 150, 400, 200, 500, 500)).toEqual({ x: 50, y: 150 });
+    expect(clampPan(500, 500, 400, 200, 500, 500)).toEqual({ x: 100, y: 300 });
+    expect(clampPan(0, 0, 400, 200, 500, 500)).toEqual({ x: 0, y: 0 });
   });
 });
 
