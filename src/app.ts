@@ -1,5 +1,8 @@
 import { decodeImage, ImageDecodeError } from "./lib/decode";
+import { mustGet, setStatus } from "./lib/dom";
 import type { ProcessOptions, ProcessResult } from "./lib/types";
+import { initRender } from "./render";
+import { initSettings } from "./settings";
 
 export interface AppState {
   file: File | null;
@@ -7,6 +10,8 @@ export interface AppState {
   output: ProcessResult | null;
   options: ProcessOptions;
   renderToken: number;
+  scheduleRender: () => void;
+  renderOutput: () => Promise<void>;
 }
 
 export function createDefaultOptions(): ProcessOptions {
@@ -23,6 +28,8 @@ export function initApp(): void {
     output: null,
     options: createDefaultOptions(),
     renderToken: 0,
+    scheduleRender: () => {},
+    renderOutput: async () => {},
   };
 
   root.innerHTML = `
@@ -71,7 +78,9 @@ export function initApp(): void {
   `;
 
   wireDropzone(root, state);
-  void render(state, root);
+  initSettings(root, state);
+  initRender(root, state);
+  setStatus(root, "Choose an image to get started.");
 }
 
 function wireDropzone(root: HTMLElement, state: AppState): void {
@@ -134,6 +143,7 @@ async function loadFile(
     state.bitmap = bitmap;
     state.file = file;
     state.output = null;
+    state.renderToken = 0;
 
     const workspace = mustGet<HTMLElement>(root, "#workspace");
     workspace.hidden = false;
@@ -146,7 +156,12 @@ async function loadFile(
     const meta = mustGet<HTMLElement>(root, "#origMeta");
     meta.textContent = `${bitmap.width} x ${bitmap.height} px — ${file.name}`;
 
-    setStatus(root, "Image loaded. Configure your output below.");
+    const outBox = mustGet<HTMLElement>(root, "#outBox");
+    outBox.innerHTML = "";
+    mustGet<HTMLElement>(root, "#outMeta").textContent = "";
+    mustGet<HTMLButtonElement>(root, "#downloadBtn").disabled = true;
+
+    state.renderOutput();
   } catch (err) {
     if (err instanceof ImageDecodeError) {
       showError(err.message);
@@ -156,21 +171,4 @@ async function loadFile(
       console.error(err);
     }
   }
-}
-
-export function setStatus(root: HTMLElement, message: string, className?: "loading"): void {
-  const el = mustGet<HTMLElement>(root, "#status");
-  el.textContent = message;
-  el.className = `status${className ? ` ${className}` : ""}`;
-}
-
-function render(state: AppState, root: HTMLElement): void {
-  void state;
-  void root;
-}
-
-function mustGet<T extends HTMLElement>(root: HTMLElement, selector: string): T {
-  const el = root.querySelector<T>(selector);
-  if (!el) throw new Error(`Element not found: ${selector}`);
-  return el;
 }
