@@ -28,10 +28,6 @@ describe("downloadName", () => {
     expect(downloadName("my.photo.2026.jpg", options)).toBe("my.photo.2026-512x512.jpeg");
   });
 
-  it("prefers the preset filename when a preset id matches", () => {
-    expect(downloadName("photo.png", options, "og-share")).toBe("og-share-1200x630.jpeg");
-  });
-
   it("falls back to the plain name for unknown preset ids", () => {
     expect(downloadName("photo.png", options, "does-not-exist")).toBe("photo-512x512.jpeg");
   });

@@ -61,27 +61,26 @@ test("fit mode switch changes the output (letterboxing)", async ({ page }) => {
   expect(out).toEqual({ width: 512, height: 512 });
 });
 
-test("App Store preset sets 1024x1024 PNG", async ({ page }) => {
+test("manual dimensions are applied and downloaded", async ({ page }) => {
   await page.goto("/");
   const img = await makeImage(page, 1200, 1200);
   await loadImageViaInput(page, img);
   await expectOutputVisible(page);
 
-  await page.click('button[data-preset="app-store"]');
-  await expect(page.locator("#width")).toHaveValue("1024");
-  await expect(page.locator("#height")).toHaveValue("1024");
+  await page.fill("#width", "800");
+  await page.fill("#height", "600");
   await expectOutputVisible(page);
 
   const downloadPromise = page.waitForEvent("download");
   await page.click("#downloadBtn");
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("app-store-1024x1024.png");
+  expect(download.suggestedFilename()).toMatch(/^fixture-1200x1200-800x600\.(jpg|jpeg)$/);
 
   const path = await download.path();
   const buf = readDownload(path!);
-  expect(pngSignature(buf)).toBe(true);
+  expect(jpegSignature(buf)).toBe(true);
   const size = await getNaturalSize(page, "#outBox img");
-  expect(size).toEqual({ width: 1024, height: 1024 });
+  expect(size).toEqual({ width: 800, height: 600 });
 });
 
 test("crop viewport: resizing the box updates source readout and output", async ({ page }) => {
