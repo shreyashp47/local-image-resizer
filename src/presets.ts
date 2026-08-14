@@ -16,8 +16,8 @@ export const PRESETS: Preset[] = [
   { id: "ios-settings", category: "App icons", label: "iOS Settings", width: 180, height: 180, format: "image/png" },
   { id: "android-adaptive", category: "App icons", label: "Android adaptive", width: 432, height: 432, format: "image/png" },
   { id: "favicon", category: "App icons", label: "Favicon", width: 64, height: 64, format: "image/png" },
-  { id: "og-share", category: "App icons", label: "OG / social share", width: 1200, height: 630, format: "image/jpeg" },
   // Social & video
+  { id: "og-share", category: "Social & video", label: "OG / social share", width: 1200, height: 630, format: "image/jpeg" },
   { id: "ig-square", category: "Social & video", label: "Instagram square", width: 1080, height: 1080, format: "image/jpeg" },
   { id: "ig-portrait", category: "Social & video", label: "Instagram portrait", width: 1080, height: 1350, format: "image/jpeg" },
   { id: "ig-story", category: "Social & video", label: "Instagram story", width: 1080, height: 1920, format: "image/jpeg" },
