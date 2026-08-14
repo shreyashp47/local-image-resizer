@@ -18,9 +18,15 @@ export function initApp(): void {
     <a class="skip-link" href="#mainContent">Skip to content</a>
     <nav class="toolbar" aria-label="Site">
       <div class="toolbar-brand">
-        <svg class="toolbar-seal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-          <circle cx="12" cy="12" r="9.4" stroke-dasharray="2.6 2.6"/>
-          <path d="M5 8.2V5h3.2M8.2 5 5 8.2M19 15.8V19h-3.2M15.8 19 19 15.8"/>
+        <svg class="toolbar-seal" viewBox="0 0 512 512" aria-hidden="true">
+          <circle cx="256" cy="256" r="206" fill="none" stroke="var(--color-accent)" stroke-width="5" stroke-dasharray="9 13"/>
+          <g fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="176" y="176" width="160" height="160" rx="26"/>
+            <path d="M140 140 V118 H118 V140 Z"/>
+            <path d="M372 140 H394 V118 H372 Z"/>
+            <path d="M372 372 V394 H394 V372 Z"/>
+            <path d="M140 372 H118 V394 H140 Z"/>
+          </g>
         </svg>
         <span class="toolbar-title">Local Image Resizer</span>
       </div>
@@ -30,8 +36,25 @@ export function initApp(): void {
       </div>
     </nav>
     <header class="app-header">
-      <h1>Local Image Resizer</h1>
-      <p>Resize images for app icons and social media — entirely in your browser.</p>
+      <div class="masthead">
+        <svg class="masthead-seal" viewBox="0 0 512 512" aria-hidden="true">
+          <circle cx="256" cy="256" r="248" fill="var(--color-ink)"/>
+          <circle cx="256" cy="256" r="230" fill="var(--color-card)"/>
+          <circle cx="256" cy="256" r="206" fill="none" stroke="var(--color-accent)" stroke-width="5" stroke-dasharray="9 13"/>
+          <circle cx="256" cy="256" r="180" fill="none" stroke="var(--color-accent)" stroke-width="3" opacity="0.8"/>
+          <g fill="none" stroke="var(--color-text)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="176" y="176" width="160" height="160" rx="26"/>
+            <path d="M140 140 V118 H118 V140 Z"/>
+            <path d="M372 140 H394 V118 H372 Z"/>
+            <path d="M372 372 V394 H394 V372 Z"/>
+            <path d="M140 372 H118 V394 H140 Z"/>
+          </g>
+        </svg>
+        <div class="masthead-text">
+          <h1>Local Image Resizer</h1>
+          <p>Resize images for app icons and social media — entirely in your browser.</p>
+        </div>
+      </div>
       <span class="privacy-badge">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>

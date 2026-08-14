@@ -153,14 +153,33 @@ body {
 }
 
 .app-header {
-  padding: 28px 24px 16px;
-  text-align: center;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 16px 8px;
+  text-align: left;
+}
+
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.masthead-seal {
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+}
+
+.masthead-text {
+  min-width: 0;
 }
 
 .app-header h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 400;
   line-height: 1.15;
   letter-spacing: 0.01em;
@@ -172,14 +191,14 @@ body {
   display: block;
   width: 96px;
   height: 0;
-  margin: 12px auto 0;
+  margin: 10px 0 0;
   border-top: 3px dashed var(--color-accent);
 }
 
 .app-header p {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   font-family: var(--font-condensed);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -217,8 +236,8 @@ body {
 }
 
 .app-footer {
-  padding: 20px 16px;
-  text-align: center;
+  padding: 20px 24px;
+  text-align: left;
   background: var(--color-ink);
   color: var(--color-bg);
   font-size: 12px;
@@ -834,7 +853,7 @@ body {
 /* ===== Mode switch ===== */
 .mode-switch {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
   margin-bottom: 16px;
 }
