@@ -5,6 +5,8 @@
 
 **Live:** https://local-image-resizer.vercel.app/
 
+![Local Image Resizer screenshot](ss.png)
+
 Offline, privacy-first image resizer for app icons and social media images.
 
 **Your image never leaves your browser.** All processing happens locally via the
