@@ -134,7 +134,9 @@ export function initApp(): void {
       No server, no upload — processing happens locally. Built with the Canvas API.
       <a href="/privacy">Privacy</a>
       ·
-      <a href="https://shreyashp47.github.io/" target="_blank" rel="noopener">By Shreyash Pattewar</a>
+      <a href="https://shreyashp47.github.io/" target="_blank" rel="noopener">Shreyash Pattewar</a>
+      ·
+      <a href="https://github.com/shreyashp47" target="_blank" rel="noopener">GitHub</a>
     </footer>
   `;
 
