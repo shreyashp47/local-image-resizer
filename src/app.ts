@@ -16,6 +16,19 @@ export function initApp(): void {
 
   root.innerHTML = `
     <a class="skip-link" href="#mainContent">Skip to content</a>
+    <nav class="toolbar" aria-label="Site">
+      <div class="toolbar-brand">
+        <svg class="toolbar-seal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <circle cx="12" cy="12" r="9.4" stroke-dasharray="2.6 2.6"/>
+          <path d="M5 8.2V5h3.2M8.2 5 5 8.2M19 15.8V19h-3.2M15.8 19 19 15.8"/>
+        </svg>
+        <span class="toolbar-title">Local Image Resizer</span>
+      </div>
+      <div class="toolbar-links">
+        <a class="toolbar-link" href="/privacy">Privacy</a>
+        <a class="toolbar-link" href="https://github.com/shreyashp47/local-image-resizer" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </nav>
     <header class="app-header">
       <h1>Local Image Resizer</h1>
       <p>Resize images for app icons and social media — entirely in your browser.</p>
