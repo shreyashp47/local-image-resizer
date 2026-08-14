@@ -1,6 +1,7 @@
 import { decodeImage, ImageDecodeError } from "./lib/decode";
 import { mustGet, setStatus } from "./lib/dom";
 import type { ProcessOptions, ProcessResult } from "./lib/types";
+import { initCompare } from "./compare";
 import { initRender } from "./render";
 import { initSettings } from "./settings";
 
@@ -11,6 +12,7 @@ export interface AppState {
   options: ProcessOptions;
   renderToken: number;
   presetId?: string;
+  aspectRatio?: number;
   scheduleRender: () => void;
   renderOutput: () => Promise<void>;
 }
@@ -81,6 +83,7 @@ export function initApp(): void {
   wireDropzone(root, state);
   initSettings(root, state);
   initRender(root, state);
+  initCompare(root, state);
   setStatus(root, "Choose an image to get started.");
 }
 
