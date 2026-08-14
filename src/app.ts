@@ -1,6 +1,7 @@
 import { decodeImage, ImageDecodeError } from "./lib/decode";
 import { mustGet, setStatus } from "./lib/dom";
 import type { ProcessOptions, ProcessResult } from "./lib/types";
+import { initBatch } from "./batch";
 import { initCompare } from "./compare";
 import { initRender } from "./render";
 import { initSettings } from "./settings";
@@ -47,33 +48,59 @@ export function initApp(): void {
       </span>
     </header>
     <main class="app-main">
-      <section class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Choose or drop an image">
-        <div class="dropzone-icon" aria-hidden="true">🖼️</div>
-        <p>Drag &amp; drop an image here, or</p>
-        <button type="button" class="dropzone-btn" id="pickBtn">Choose image</button>
-        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
-        <div class="dropzone-error" id="dropError" role="alert" aria-live="assertive" hidden></div>
-      </section>
+      <div class="mode-switch" role="group" aria-label="Mode">
+        <button type="button" id="modeSingle" class="active">Single image</button>
+        <button type="button" id="modeBatch">Batch</button>
+      </div>
 
-      <div class="workspace" id="workspace" hidden>
-        <div class="grid-2">
-          <section class="panel" aria-labelledby="origTitle">
-            <h2 id="origTitle">Original</h2>
-            <div class="preview-box" id="origBox"><img id="origPreview" alt="Original image"></div>
-            <div class="preview-label" id="origMeta"></div>
-          </section>
-          <section class="panel" aria-labelledby="outTitle">
-            <h2 id="outTitle">Output</h2>
-            <div class="preview-box" id="outBox"></div>
-            <div class="preview-label" id="outMeta"></div>
-          </section>
+      <section id="singleView">
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Choose or drop an image">
+          <div class="dropzone-icon" aria-hidden="true">🖼️</div>
+          <p>Drag &amp; drop an image here, or</p>
+          <button type="button" class="dropzone-btn" id="pickBtn">Choose image</button>
+          <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+          <div class="dropzone-error" id="dropError" role="alert" aria-live="assertive" hidden></div>
         </div>
-        <div class="panel" id="settingsPanel" style="margin-top:20px;" aria-labelledby="settingsTitle">
-          <h2 id="settingsTitle">Settings</h2>
-          <div id="settingsBody"></div>
+
+        <div class="workspace" id="workspace" hidden>
+          <div class="grid-2">
+            <section class="panel" aria-labelledby="origTitle">
+              <h2 id="origTitle">Original</h2>
+              <div class="preview-box" id="origBox"><img id="origPreview" alt="Original image"></div>
+              <div class="preview-label" id="origMeta"></div>
+            </section>
+            <section class="panel" aria-labelledby="outTitle">
+              <h2 id="outTitle">Output</h2>
+              <div class="preview-box" id="outBox"></div>
+              <div class="preview-label" id="outMeta"></div>
+            </section>
+          </div>
+          <div class="panel" id="settingsPanel" style="margin-top:20px;" aria-labelledby="settingsTitle">
+            <h2 id="settingsTitle">Settings</h2>
+            <div id="settingsBody"></div>
+          </div>
         </div>
         <div class="status" id="status" role="status" aria-live="polite"></div>
-      </div>
+      </section>
+
+      <section id="batchView" hidden>
+        <div class="panel">
+          <h2>Batch resize</h2>
+          <p style="color:var(--color-muted);font-size:13px;margin:0 0 12px;">
+            Applies the current settings (size, format, fit mode) to every image.
+          </p>
+          <div class="dropzone batch-drop" id="batchDrop" role="button" tabindex="0" aria-label="Add images to batch">
+            <p>Drop multiple images here, or</p>
+            <button type="button" class="dropzone-btn" id="batchPick">Add images</button>
+            <input type="file" id="batchInput" accept="image/*" multiple hidden>
+          </div>
+          <div class="batch-queue" id="batchQueue"></div>
+          <div class="actions" style="margin-top:16px;">
+            <button type="button" class="btn-primary" id="batchProcessBtn" disabled>Process all</button>
+            <button type="button" class="btn-secondary" id="batchZipBtn" disabled>Download all as ZIP</button>
+          </div>
+        </div>
+      </section>
     </main>
     <footer class="app-footer">
       No server, no upload — processing happens locally. Built with the Canvas API.
@@ -81,10 +108,31 @@ export function initApp(): void {
   `;
 
   wireDropzone(root, state);
+  wireModeSwitch(root, state);
   initSettings(root, state);
   initRender(root, state);
   initCompare(root, state);
+  initBatch(root, state);
   setStatus(root, "Choose an image to get started.");
+}
+
+function wireModeSwitch(root: HTMLElement, state: AppState): void {
+  const singleBtn = mustGet<HTMLButtonElement>(root, "#modeSingle");
+  const batchBtn = mustGet<HTMLButtonElement>(root, "#modeBatch");
+  const singleView = mustGet<HTMLElement>(root, "#singleView");
+  const batchView = mustGet<HTMLElement>(root, "#batchView");
+
+  const setMode = (mode: "single" | "batch") => {
+    const single = mode === "single";
+    singleBtn.classList.toggle("active", single);
+    batchBtn.classList.toggle("active", !single);
+    singleView.hidden = !single;
+    batchView.hidden = single;
+  };
+
+  singleBtn.addEventListener("click", () => setMode("single"));
+  batchBtn.addEventListener("click", () => setMode("batch"));
+  void state;
 }
 
 function wireDropzone(root: HTMLElement, state: AppState): void {
