@@ -154,9 +154,9 @@ body {
 
 .app-header {
   width: 100%;
-  max-width: 960px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 28px 16px 8px;
+  padding: 28px 24px 8px;
   text-align: left;
 }
 
@@ -230,9 +230,9 @@ body {
 .app-main {
   flex: 1;
   width: 100%;
-  max-width: 960px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 16px 40px;
+  padding: 0 24px 40px;
 }
 
 .app-footer {
@@ -360,7 +360,7 @@ body {
 
 .grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
   align-items: stretch;
 }
@@ -368,6 +368,7 @@ body {
 .grid-2 > .panel {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .grid-2 > .panel + .panel {
@@ -387,9 +388,13 @@ body {
 /* ===== Editor layout: previews left, settings sidebar right ===== */
 .editor-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  grid-template-columns: minmax(0, 1fr) clamp(280px, 26vw, 336px);
   gap: 24px;
   align-items: start;
+}
+
+.editor-grid > * {
+  min-width: 0;
 }
 
 .settings-panel {
