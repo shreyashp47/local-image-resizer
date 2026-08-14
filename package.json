@@ -4,6 +4,28 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Offline, privacy-first image resizer for app icons and social media images. 100% client-side, nothing ever uploaded.",
+  "author": "Shreyash Pattewar <34227385+shreyashp47@users.noreply.github.com>",
+  "homepage": "https://local-image-resizer.pages.dev/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shreyashp47/local-image-resizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shreyashp47/local-image-resizer/issues"
+  },
+  "keywords": [
+    "image-resizer",
+    "offline",
+    "privacy-first",
+    "pwa",
+    "canvas-api",
+    "web-worker",
+    "app-icons",
+    "social-media",
+    "crop",
+    "resize"
+  ],
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

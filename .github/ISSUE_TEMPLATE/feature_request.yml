@@ -1,0 +1,27 @@
+---
+name: Feature request
+about: Suggest an idea for Local Image Resizer
+title: "[Feature]: "
+labels: ["enhancement"]
+assignees: ""
+---
+
+## Problem statement
+What problem does this feature solve? Who is affected?
+
+## Proposed solution
+Describe the feature you'd like. Include UI/UX considerations if applicable.
+
+## Alternatives considered
+Any other solutions or workarounds you've thought of.
+
+## Privacy & offline impact
+This tool is 100% client-side and privacy-first. Does your feature require:
+- External network requests?
+- Storing user data?
+- New dependencies (especially CDN-loaded)?
+
+If yes, explain how it maintains the privacy/offline guarantees.
+
+## Additional context
+Mockups, links to similar implementations, or any other context.

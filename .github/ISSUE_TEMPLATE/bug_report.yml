@@ -1,0 +1,34 @@
+---
+name: Bug report
+about: Report a reproducible bug
+title: "[Bug]: "
+labels: ["bug"]
+assignees: ""
+---
+
+## Description
+A clear and concise description of the bug.
+
+## Steps to reproduce
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+
+## Expected behavior
+What you expected to happen.
+
+## Screenshots / screen recording
+If applicable, add screenshots or a screen recording to help explain the problem.
+
+## Environment
+- OS: [e.g. macOS 14.5, Windows 11, Android 14]
+- Browser: [e.g. Chrome 126, Safari 17, Firefox 127]
+- Device: [Desktop / Mobile / Tablet]
+- Local build or deployed: [local / preview / production]
+
+## Additional context
+Any other information, configuration, or data that might help resolve the issue.
+
+## Privacy note
+**Do not attach real images** — if you need to demonstrate, use a generated placeholder or describe the image characteristics (dimensions, format, aspect ratio).

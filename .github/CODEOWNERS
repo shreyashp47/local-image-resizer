@@ -1,0 +1,14 @@
+# Global owners
+* @shreyashp47
+
+# CI/CD and workflows
+.github/workflows/ @shreyashp47
+
+# Core application logic
+/src/ @shreyashp47
+
+# End-to-end tests
+/e2e/ @shreyashp47
+
+# Documentation
+/*.md @shreyashp47
