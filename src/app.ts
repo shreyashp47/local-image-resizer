@@ -49,6 +49,7 @@ export function initApp(): void {
   };
 
   root.innerHTML = `
+    <a class="skip-link" href="#mainContent">Skip to content</a>
     <header class="app-header">
       <h1>Local Image Resizer</h1>
       <p>Resize images for app icons and social media — entirely in your browser.</p>
@@ -59,10 +60,10 @@ export function initApp(): void {
         100% offline — nothing is ever uploaded
       </span>
     </header>
-    <main class="app-main">
+    <main class="app-main" id="mainContent">
       <div class="mode-switch" role="group" aria-label="Mode">
-        <button type="button" id="modeSingle" class="active">Single image</button>
-        <button type="button" id="modeBatch">Batch</button>
+        <button type="button" id="modeSingle" class="active" aria-pressed="true">Single image</button>
+        <button type="button" id="modeBatch" aria-pressed="false">Batch</button>
       </div>
 
       <section id="singleView">
@@ -138,6 +139,8 @@ function wireModeSwitch(root: HTMLElement, state: AppState): void {
     const single = mode === "single";
     singleBtn.classList.toggle("active", single);
     batchBtn.classList.toggle("active", !single);
+    singleBtn.setAttribute("aria-pressed", String(single));
+    batchBtn.setAttribute("aria-pressed", String(!single));
     singleView.hidden = !single;
     batchView.hidden = single;
   };
