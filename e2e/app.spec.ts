@@ -68,6 +68,8 @@ test("manual dimensions are applied and downloaded", async ({ page }) => {
 
   await page.fill("#width", "800");
   await page.fill("#height", "600");
+  // trigger change event so the app commits the new dimensions
+  await page.press("#height", "Enter");
   await expectOutputVisible(page);
 
   const downloadPromise = page.waitForEvent("download");
