@@ -1,4 +1,4 @@
-import type { OutputFormat } from "./types";
+import type { OutputFormat } from "./lib/types";
 
 export interface Preset {
   id: string;
